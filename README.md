@@ -18,7 +18,7 @@ The CNN consists of multiple convolutional layers with activation functions, fol
 
 ## Neural Network Model
 
-<img width="1183" height="467" alt="425547172-cb131631-9bba-4dc8-a3c8-dd7a9b3c98ba" src="https://github.com/user-attachments/assets/4bb8cd96-bf53-4665-9f77-25e96fec1121" />
+<img width="962" height="468" alt="image" src="https://github.com/user-attachments/assets/e81eb9fa-27d9-4ba2-8ce6-73bdd2fc4233" />
 
 ## DESIGN STEPS
 
@@ -65,18 +65,22 @@ Make predictions on new images and analyze the results.
 class CNNClassifier(nn.Module):
     def __init__(self):
         super(CNNClassifier, self).__init__()
+        # Convolution Layer 1
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
         self.pool = nn.MaxPool2d(2, 2)
+        # Convolution Layer 2
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        # Fully Connected Layers
         self.fc1 = nn.Linear(64 * 7 * 7, 128)
         self.fc2 = nn.Linear(128, 10)
-
-     def forward(self, x):
-        x = self.pool(torch.relu(self.conv1(x)))
-        x = self.pool(torch.relu(self.conv2(x)))
-        x = x.view(x.size(0), -1)
-        x = torch.relu(self.fc1(x))
+        self.relu = nn.ReLU()
+    def forward(self, x):
+        x = self.pool(self.relu(self.conv1(x)))   # 28x28 → 14x14
+        x = self.pool(self.relu(self.conv2(x)))   # 14x14 → 7x7
+        x = x.view(-1, 64 * 7 * 7)                # Flatten
+        x = self.relu(self.fc1(x))
         x = self.fc2(x)
+
         return x
 
 ```
@@ -116,21 +120,19 @@ def train_model(model, train_loader, num_epochs=3):
 ## OUTPUT
 ### Training Loss per Epoch
 
-<img width="690" height="607" alt="image" src="https://github.com/user-attachments/assets/c68a2587-68c7-4d8b-837a-bbc147643c37" />
-
+<img width="496" height="216" alt="image" src="https://github.com/user-attachments/assets/4862d760-7047-4380-896d-ead7becdb5e4" />
 
 ### Confusion Matrix
 
-<img width="852" height="607" alt="image" src="https://github.com/user-attachments/assets/58eebce6-7687-4d86-a7f8-8cae42dbbb35" />
+<img width="907" height="795" alt="image" src="https://github.com/user-attachments/assets/2a4afebf-a86b-4f9e-8ebd-2b29400b6d0e" />
 
 ### Classification Report
 
-<img width="682" height="452" alt="image" src="https://github.com/user-attachments/assets/cbb6c393-f77a-4d94-ba69-372d5c142e07" />
-
+<img width="643" height="413" alt="image" src="https://github.com/user-attachments/assets/e73fff89-9176-48c4-87d1-3114ed2dc844" />
 
 ### New Sample Data Prediction
 
-<img width="662" height="627" alt="image" src="https://github.com/user-attachments/assets/d2b18c88-5cf9-4d4b-a960-1591c2124396" />
+<img width="576" height="562" alt="image" src="https://github.com/user-attachments/assets/9955f509-1731-4b48-af0b-e35892295c5d" />
 
 ## RESULT
 The Convolutional Neural Network (CNN) was successfully implemented for image classification. The model was trained on the dataset, and its performance was evaluated using accuracy metrics, confusion matrix, and classification report. Predictions on new sample images were verified, confirming the model's effectiveness in classifying images.
